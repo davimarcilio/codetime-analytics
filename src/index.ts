@@ -99,7 +99,7 @@ app.listen(3000);
 
 const MS_OF_HOUR = 3600000;
 const MS_OF_MINUTE = 60000;
-export function getDuration(ms: number): string {
+function getDuration(ms: number): string {
   let result = "";
   let day, hour, minute;
   if (ms > MS_OF_HOUR) {
@@ -141,7 +141,7 @@ export function getDuration(ms: number): string {
 
 import { EChartsOption } from "echarts";
 
-export function getNextSaturday() {
+function getNextSaturday() {
   const currentDate = new Date();
   const day = currentDate.getDay();
   const delta = 6 - day;
@@ -152,7 +152,7 @@ export function getNextSaturday() {
   return `${year}-${month}-${date}`;
 }
 
-export function getStartSunday() {
+function getStartSunday() {
   const currentDate = new Date();
   const day = currentDate.getDay();
   const delta = 7 - day;
@@ -165,7 +165,7 @@ export function getStartSunday() {
   return `${year}-${month}-${date}`;
 }
 
-export function getCalendarOptions(data: any[], width: number): EChartsOption {
+function getCalendarOptions(data: any[], width: number): EChartsOption {
   const min = data.reduce(
     (p: number, c: any) => (c.duration < p ? c.duration : p),
     Infinity

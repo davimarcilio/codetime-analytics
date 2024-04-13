@@ -35,6 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDuration = void 0;
 const dayjs_1 = __importDefault(require("dayjs"));
 const express_1 = __importDefault(require("express"));
 const echarts = __importStar(require("echarts"));
@@ -87412,10 +87413,9 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     chart.setOption(getCalendarOptions(daysWithTimeInDay, 1080));
     chart.resize({
         width: 1080,
-        height: 720,
+        height: 250,
     });
     const svgChart = chart.renderToSVGString();
-    console.log(svgChart);
     return res.type("image/svg+xml").send(svgChart);
 }));
 app.listen(3000);
@@ -87497,6 +87497,7 @@ function getDuration(ms) {
     }
     return result;
 }
+exports.getDuration = getDuration;
 function getNextSaturday() {
     const currentDate = new Date();
     const day = currentDate.getDay();
@@ -87520,10 +87521,14 @@ function getStartSunday() {
 function getCalendarOptions(data, width) {
     const min = data.reduce((p, c) => (c.duration < p ? c.duration : p), Infinity);
     const max = data.reduce((p, c) => (c.duration > p ? c.duration : p), -Infinity);
-    console.log(min);
-    console.log(max);
     const cell = (width - 20) / 53;
     const options = {
+        tooltip: {
+            formatter: (param) => {
+                return `${param.data.time} </br> <span class="font-weight-bold">
+        ${getDuration(param.data.duration)}</span>`;
+            },
+        },
         dataset: {
             source: data,
         },
@@ -87557,7 +87562,6 @@ function getCalendarOptions(data, width) {
         ],
         darkMode: true,
     };
-    console.log(options);
     return options;
 }
 module.exports = app;

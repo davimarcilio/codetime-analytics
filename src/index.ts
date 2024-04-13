@@ -1,6 +1,4 @@
 import dayjs from "dayjs";
-import { readFile, readFileSync, writeFile } from "fs";
-import path from "path";
 import express from "express";
 import * as echarts from "echarts";
 const app = express();
@@ -94844,11 +94842,10 @@ app.get("/", async (req, res) => {
 
   chart.resize({
     width: 1080,
-    height: 720,
+    height: 250,
   });
 
   const svgChart = chart.renderToSVGString();
-  console.log(svgChart);
 
   return res.type("image/svg+xml").send(svgChart);
 });
@@ -94897,7 +94894,7 @@ app.listen(3000);
 
 const MS_OF_HOUR = 3600000;
 const MS_OF_MINUTE = 60000;
-function getDuration(ms: number): string {
+export function getDuration(ms: number): string {
   let result = "";
   let day, hour, minute;
   if (ms > MS_OF_HOUR) {
@@ -94936,7 +94933,6 @@ function getDuration(ms: number): string {
   }
   return result;
 }
-
 import { EChartsOption } from "echarts";
 
 function getNextSaturday() {
@@ -94972,11 +94968,15 @@ function getCalendarOptions(data: any[], width: number): EChartsOption {
     (p: number, c: any) => (c.duration > p ? c.duration : p),
     -Infinity
   );
-  console.log(min);
-  console.log(max);
 
   const cell = (width - 20) / 53;
   const options = {
+    tooltip: {
+      formatter: (param: any) => {
+        return `${param.data.time} </br> <span class="font-weight-bold">
+        ${getDuration(param.data.duration)}</span>`;
+      },
+    },
     dataset: {
       source: data,
     },
@@ -95010,7 +95010,6 @@ function getCalendarOptions(data: any[], width: number): EChartsOption {
     ],
     darkMode: true,
   } as EChartsOption;
-  console.log(options);
 
   return options;
 }

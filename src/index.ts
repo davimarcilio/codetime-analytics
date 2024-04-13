@@ -53,7 +53,6 @@ app.get("/", async (req, res) => {
       return res.send(svgChart);
     }
   );
-  return res.send("test");
 });
 
 app.listen(3000);

@@ -43,7 +43,6 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const chart = echarts.init(null, null, {
         renderer: "svg",
         ssr: true,
-        height: 250,
     });
     const lines = [
         {
@@ -87411,8 +87410,13 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         duration: fullData.filter((e) => e.event_time === day).length * 60000,
     }));
     chart.setOption(getCalendarOptions(daysWithTimeInDay, 1080));
+    chart.resize({
+        width: 1080,
+        height: 720,
+    });
     const svgChart = chart.renderToSVGString();
-    return res.send(svgChart);
+    console.log(svgChart);
+    return res.type("image/svg+xml").send(svgChart);
 }));
 app.listen(3000);
 // async function readDataFile() {

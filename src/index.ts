@@ -5,7 +5,7 @@ import express from "express";
 import * as echarts from "echarts";
 const app = express();
 
-app.get("/graph", async (req, res) => {
+app.get("/", async (req, res) => {
   const chart = echarts.init(null, null, {
     renderer: "svg",
     ssr: true,

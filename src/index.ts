@@ -216,5 +216,3 @@ export function getCalendarOptions(data: any[], width: number): EChartsOption {
 
   return options;
 }
-
-module.exports = app;

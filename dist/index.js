@@ -42,23 +42,25 @@ const calendar_1 = require("./echarts/calendar");
 const node_cron_1 = require("node-cron");
 const api_1 = require("./lib/api");
 const prisma_1 = require("./lib/prisma");
+const apicache_1 = require("apicache");
 const app = (0, express_1.default)();
-app.get("/graph", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/graph", (0, apicache_1.middleware)("24 hours"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const chart = echarts.init(null, null, {
         renderer: "svg",
         ssr: true,
     });
-    const data = yield prisma_1.prisma.records.findMany();
+    const data = yield prisma_1.prisma.records.findMany({
+        orderBy: { event_time: "asc" },
+    });
     const fullData = data.map((line) => {
-        return Object.assign(Object.assign({}, line), { event_time: line.event_time &&
-                `${(0, dayjs_1.default)(Number(line.event_time)).format("YYYY-MM-DD")}T00:00:00Z` });
+        return Object.assign(Object.assign({}, line), { event_time: line.event_time && (0, dayjs_1.default)(Number(line.event_time)).format("YYYY-MM-DD") });
     });
     const allDays = Array.from(new Set(fullData.filter((e) => !!e.event_time).map((e) => e.event_time)));
     const daysWithTimeInDay = allDays.map((day) => ({
         time: day,
-        by: "",
         duration: fullData.filter((e) => e.event_time === day).length * 60000,
     }));
+    console.log(daysWithTimeInDay);
     chart.setOption((0, calendar_1.getCalendarOptions)(daysWithTimeInDay, 1080));
     chart.resize({
         width: 1080,

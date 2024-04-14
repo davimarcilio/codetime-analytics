@@ -5,32 +5,35 @@ import { getCalendarOptions } from "./echarts/calendar";
 import { schedule } from "node-cron";
 import { api } from "./lib/api";
 import { prisma } from "./lib/prisma";
+import { middleware } from "apicache";
 const app = express();
 
-app.get("/graph", async (req, res) => {
+app.get("/graph", middleware("24 hours"), async (req, res) => {
   const chart = echarts.init(null, null, {
     renderer: "svg",
     ssr: true,
   });
 
-  const data = await prisma.records.findMany();
+  const data = await prisma.records.findMany({
+    orderBy: { event_time: "asc" },
+  });
 
   const fullData = data.map((line) => {
     return {
       ...line,
       event_time:
-        line.event_time &&
-        `${dayjs(Number(line.event_time)).format("YYYY-MM-DD")}T00:00:00Z`,
+        line.event_time && dayjs(Number(line.event_time)).format("YYYY-MM-DD"),
     };
   });
   const allDays = Array.from(
     new Set(fullData.filter((e) => !!e.event_time).map((e) => e.event_time))
-  ) as String[];
+  ) as string[];
   const daysWithTimeInDay = allDays.map((day) => ({
     time: day,
-    by: "",
     duration: fullData.filter((e) => e.event_time === day).length * 60000,
   }));
+
+  console.log(daysWithTimeInDay);
 
   chart.setOption(getCalendarOptions(daysWithTimeInDay, 1080));
 

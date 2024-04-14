@@ -16,7 +16,7 @@
   "crons": [
     {
       "path": "dist/cron.js",
-      "schedule": "0 5 * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }

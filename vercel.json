@@ -7,6 +7,17 @@
       "config": { "includeFiles": ["dist/**"] }
     }
   ],
+  "headers": [
+    {
+      "source": "/dist/index.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=86400"
+        }
+      ]
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",

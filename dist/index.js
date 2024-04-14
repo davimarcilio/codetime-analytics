@@ -39,8 +39,6 @@ const dayjs_1 = __importDefault(require("dayjs"));
 const express_1 = __importDefault(require("express"));
 const echarts = __importStar(require("echarts"));
 const calendar_1 = require("./echarts/calendar");
-const node_cron_1 = require("node-cron");
-const api_1 = require("./lib/api");
 const prisma_1 = require("./lib/prisma");
 const apicache_1 = require("apicache");
 const app = (0, express_1.default)();
@@ -71,37 +69,6 @@ app.get("/graph", (0, apicache_1.middleware)("24 hours"), (req, res) => __awaite
 }));
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Api listen on 3000, starting cronjobs");
-    (0, node_cron_1.schedule)("0 0 * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-        const { data: csv, request } = yield api_1.api.post("/user/records/export", null, {
-            headers: {
-                Cookie: `CODETIME_SESSION=${process.env.CODETIME_SESSION}`,
-            },
-        });
-        const lines = csv.split("\n").slice(1);
-        const fullData = lines
-            .filter((line) => line.split(",").length === 6)
-            .map((line) => {
-            var _a;
-            const splittedData = line.split(",");
-            return {
-                editor: splittedData.at(0),
-                platform: splittedData.at(1),
-                project: splittedData.at(2),
-                relative_file: splittedData.at(3),
-                language: splittedData.at(4),
-                event_time: Number((_a = splittedData.at(5)) !== null && _a !== void 0 ? _a : 0),
-            };
-        });
-        const lastRecord = yield prisma_1.prisma.records.findFirst({
-            orderBy: {
-                event_time: "desc",
-            },
-        });
-        const filteredData = fullData.filter((e) => { var _a; return e.event_time > ((_a = lastRecord === null || lastRecord === void 0 ? void 0 : lastRecord.event_time) !== null && _a !== void 0 ? _a : 0); });
-        yield prisma_1.prisma.records.createMany({
-            data: filteredData,
-        });
-    }));
 }));
 // async function readDataFile() {
 //   readFile(

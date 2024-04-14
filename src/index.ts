@@ -44,7 +44,9 @@ app.get("/graph", middleware("24 hours"), async (req, res) => {
 
   res.setHeader(
     "Cache-Control",
-    `s-maxage=${60 * 60 * 12}, stale-while-revalidate`
+    `max-age=${60 * 60 * 24}, s-maxage=${
+      60 * 60 * 24
+    }, stale-while-revalidate=86400`
   );
 
   return res.type("image/svg+xml").send(svgChart);

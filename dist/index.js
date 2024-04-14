@@ -66,6 +66,7 @@ app.get("/graph", (0, apicache_1.middleware)("24 hours"), (req, res) => __awaite
         height: 250,
     });
     const svgChart = chart.renderToSVGString();
+    res.setHeader("Cache-Control", `s-maxage=${60 * 60 * 12}, stale-while-revalidate`);
     return res.type("image/svg+xml").send(svgChart);
 }));
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {

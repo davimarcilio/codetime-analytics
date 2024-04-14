@@ -42,6 +42,11 @@ app.get("/graph", middleware("24 hours"), async (req, res) => {
 
   const svgChart = chart.renderToSVGString();
 
+  res.setHeader(
+    "Cache-Control",
+    `s-maxage=${60 * 60 * 12}, stale-while-revalidate`
+  );
+
   return res.type("image/svg+xml").send(svgChart);
 });
 

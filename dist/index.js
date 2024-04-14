@@ -41,7 +41,9 @@ const echarts = __importStar(require("echarts"));
 const calendar_1 = require("./echarts/calendar");
 const prisma_1 = require("./lib/prisma");
 const apicache_1 = require("apicache");
+const cron_1 = require("./cron");
 const app = (0, express_1.default)();
+app.get("/updateDatabase", cron_1.updateDatabase);
 app.get("/graph", (0, apicache_1.middleware)("24 hours"), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const chart = echarts.init(null, null, {
         renderer: "svg",
@@ -58,7 +60,6 @@ app.get("/graph", (0, apicache_1.middleware)("24 hours"), (req, res) => __awaite
         time: day,
         duration: fullData.filter((e) => e.event_time === day).length * 60000,
     }));
-    console.log(daysWithTimeInDay);
     chart.setOption((0, calendar_1.getCalendarOptions)(daysWithTimeInDay, 1080));
     chart.resize({
         width: 1080,

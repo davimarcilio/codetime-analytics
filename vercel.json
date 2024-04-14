@@ -9,7 +9,7 @@
   ],
   "headers": [
     {
-      "source": "/dist/index.js",
+      "source": "/graph",
       "headers": [
         {
           "key": "Cache-Control",
@@ -26,7 +26,7 @@
   ],
   "crons": [
     {
-      "path": "/dist/cron.js",
+      "path": "/updateDatabase",
       "schedule": "0 0 * * *"
     }
   ]

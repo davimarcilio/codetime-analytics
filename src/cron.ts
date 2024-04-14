@@ -1,16 +1,13 @@
+import { Request, Response } from "express";
 import { api } from "./lib/api";
 import { prisma } from "./lib/prisma";
 
-async function updateDatabase() {
-  const { data: csv, request } = await api.post<string>(
-    "/user/records/export",
-    null,
-    {
-      headers: {
-        Cookie: `CODETIME_SESSION=${process.env.CODETIME_SESSION}`,
-      },
-    }
-  );
+export async function updateDatabase(req: Request, res: Response) {
+  const { data: csv } = await api.post<string>("/user/records/export", null, {
+    headers: {
+      Cookie: `CODETIME_SESSION=${process.env.CODETIME_SESSION}`,
+    },
+  });
 
   const lines = csv.split("\n").slice(1);
 
@@ -41,6 +38,7 @@ async function updateDatabase() {
   await prisma.records.createMany({
     data: filteredData,
   });
+  return res.status(200).json({
+    message: "success",
+  });
 }
-
-updateDatabase();

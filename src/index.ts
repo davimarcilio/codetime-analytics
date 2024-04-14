@@ -2,12 +2,12 @@ import dayjs from "dayjs";
 import express from "express";
 import * as echarts from "echarts";
 import { getCalendarOptions } from "./echarts/calendar";
-import { schedule } from "node-cron";
-import { api } from "./lib/api";
 import { prisma } from "./lib/prisma";
 import { middleware } from "apicache";
+import { updateDatabase } from "./cron";
 const app = express();
 
+app.get("/updateDatabase", updateDatabase);
 app.get("/graph", middleware("24 hours"), async (req, res) => {
   const chart = echarts.init(null, null, {
     renderer: "svg",
@@ -32,8 +32,6 @@ app.get("/graph", middleware("24 hours"), async (req, res) => {
     time: day,
     duration: fullData.filter((e) => e.event_time === day).length * 60000,
   }));
-
-  console.log(daysWithTimeInDay);
 
   chart.setOption(getCalendarOptions(daysWithTimeInDay, 1080));
 

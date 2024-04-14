@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateDatabase = void 0;
 const api_1 = require("./lib/api");
 const prisma_1 = require("./lib/prisma");
-function updateDatabase() {
+function updateDatabase(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data: csv, request } = yield api_1.api.post("/user/records/export", null, {
+        const { data: csv } = yield api_1.api.post("/user/records/export", null, {
             headers: {
                 Cookie: `CODETIME_SESSION=${process.env.CODETIME_SESSION}`,
             },
@@ -42,7 +43,10 @@ function updateDatabase() {
         yield prisma_1.prisma.records.createMany({
             data: filteredData,
         });
+        return res.status(200).json({
+            message: "success",
+        });
     });
 }
-updateDatabase();
+exports.updateDatabase = updateDatabase;
 //# sourceMappingURL=cron.js.map

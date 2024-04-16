@@ -7,17 +7,7 @@
       "config": { "includeFiles": ["dist/**"] }
     }
   ],
-  "headers": [
-    {
-      "source": "/graph",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, s-maxage=86400"
-        }
-      ]
-    }
-  ],
+
   "routes": [
     {
       "src": "/(.*)",

@@ -4,31 +4,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCalendarOptions = void 0;
-const weekday_1 = require("../utils/weekday");
 const dayjs_1 = __importDefault(require("dayjs"));
-function getCalendarOptions(data, width) {
-    console.log((0, weekday_1.getStartSunday)());
-    console.log((0, weekday_1.getNextSaturday)());
-    console.log({
-        range: [
-            (0, dayjs_1.default)().set("day", 6).subtract(1, "year").format("YYYY-MM-DD"),
-            (0, dayjs_1.default)().set("day", 6).format("YYYY-MM-DD"),
-        ],
-    });
-    const min = data.reduce((p, c) => (c.duration < p ? c.duration : p), Infinity);
-    const max = data.reduce((p, c) => (c.duration > p ? c.duration : p), -Infinity);
+function getCalendarOptions(propData, width) {
+    const min = propData.reduce((p, c) => (c.duration < p ? c.duration : p), Infinity);
+    const max = propData.reduce((p, c) => (c.duration > p ? c.duration : p), -Infinity);
+    const data = propData.map((e) => (Object.assign(Object.assign({}, e), { duration: e.duration === 0 ? max * -1 : e.duration })));
     const cell = (width - 20) / 53;
     const options = {
         dataset: {
             source: data,
         },
+        backgroundColor: "#18181b",
         visualMap: {
             max,
-            min,
+            min: max * -1,
             type: "piecewise",
             show: false,
             inRange: {
-                color: ["#5470C633", "#5470C6ff"],
+                color: ["#27272a", "#5470C633", "#5470C6ff"],
             },
         },
         calendar: {

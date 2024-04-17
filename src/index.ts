@@ -28,12 +28,39 @@ app.get("/graph", middleware("24 hours"), async (req, res) => {
   const allDays = Array.from(
     new Set(fullData.filter((e) => !!e.event_time).map((e) => e.event_time))
   ) as string[];
-  const daysWithTimeInDay = allDays.map((day) => ({
-    time: day,
-    duration: fullData.filter((e) => e.event_time === day).length * 60000,
-  }));
 
-  chart.setOption(getCalendarOptions(daysWithTimeInDay, 1080));
+  const daysDiff = dayjs(dayjs().set("day", 6)).diff(
+    dayjs().set("day", 6).subtract(1, "year").add(3, "week"),
+    "days"
+  );
+
+  const daysWithTimeInDay = Array.from({ length: daysDiff }, (_, i) => {
+    const date = dayjs()
+      .set("day", 6)
+      .subtract(1, "year")
+      .add(3, "week")
+      .add(i + 1, "days")
+      .format("YYYY-MM-DD");
+
+    if (allDays.includes(date)) {
+      return {
+        time: date,
+        duration: fullData.filter((e) => e.event_time === date).length * 60000,
+      };
+    }
+
+    return {
+      time: date,
+      duration: 0,
+    };
+  });
+
+  // const daysWithTimeInDay =  allDays.map((day) => ({
+  //   time: day,
+  //   duration: fullData.filter((e) => e.event_time === day).length * 60000,
+  // }));
+
+  chart.setOption(getCalendarOptions(daysWithTimeInDay, 1000));
 
   chart.resize({
     width: 1080,

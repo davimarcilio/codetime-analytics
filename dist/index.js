@@ -56,17 +56,36 @@ app.get("/graph", (0, apicache_1.middleware)("24 hours"), (req, res) => __awaite
         return Object.assign(Object.assign({}, line), { event_time: line.event_time && (0, dayjs_1.default)(Number(line.event_time)).format("YYYY-MM-DD") });
     });
     const allDays = Array.from(new Set(fullData.filter((e) => !!e.event_time).map((e) => e.event_time)));
-    const daysWithTimeInDay = allDays.map((day) => ({
-        time: day,
-        duration: fullData.filter((e) => e.event_time === day).length * 60000,
-    }));
-    chart.setOption((0, calendar_1.getCalendarOptions)(daysWithTimeInDay, 1080));
+    const daysDiff = (0, dayjs_1.default)((0, dayjs_1.default)().set("day", 6)).diff((0, dayjs_1.default)().set("day", 6).subtract(1, "year").add(3, "week"), "days");
+    const daysWithTimeInDay = Array.from({ length: daysDiff }, (_, i) => {
+        const date = (0, dayjs_1.default)()
+            .set("day", 6)
+            .subtract(1, "year")
+            .add(3, "week")
+            .add(i + 1, "days")
+            .format("YYYY-MM-DD");
+        if (allDays.includes(date)) {
+            return {
+                time: date,
+                duration: fullData.filter((e) => e.event_time === date).length * 60000,
+            };
+        }
+        return {
+            time: date,
+            duration: 0,
+        };
+    });
+    // const daysWithTimeInDay =  allDays.map((day) => ({
+    //   time: day,
+    //   duration: fullData.filter((e) => e.event_time === day).length * 60000,
+    // }));
+    chart.setOption((0, calendar_1.getCalendarOptions)(daysWithTimeInDay, 1000));
     chart.resize({
         width: 1080,
         height: 250,
     });
     const svgChart = chart.renderToSVGString();
-    res.setHeader("Cache-Control", `s-maxage=${60 * 60 * 12}, stale-while-revalidate`);
+    res.setHeader("Cache-Control", `max-age=${60 * 60 * 24}, s-maxage=${60 * 60 * 24}, stale-while-revalidate=86400`);
     return res.type("image/svg+xml").send(svgChart);
 }));
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {

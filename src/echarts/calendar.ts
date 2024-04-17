@@ -44,7 +44,7 @@ export function getCalendarOptions(
           .subtract(1, "year")
           .add(3, "week")
           .format("YYYY-MM-DD"),
-        dayjs().set("day", 6).format("YYYY-MM-DD"),
+        dayjs().format("YYYY-MM-DD"),
       ],
 
       dayLabel: { color: "#777" },

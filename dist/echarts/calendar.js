@@ -32,7 +32,7 @@ function getCalendarOptions(propData, width) {
                     .subtract(1, "year")
                     .add(3, "week")
                     .format("YYYY-MM-DD"),
-                (0, dayjs_1.default)().set("day", 6).format("YYYY-MM-DD"),
+                (0, dayjs_1.default)().format("YYYY-MM-DD"),
             ],
             dayLabel: { color: "#777" },
             monthLabel: { color: "#777" },
